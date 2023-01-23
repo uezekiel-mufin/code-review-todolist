@@ -1,0 +1,82 @@
+import { deleteTodo, updateTodo } from './crud.js';
+import { getDragAfetrElement, selectTodo } from './crud2.js';
+
+const createTodo = (item, todoListss, todoUl) => {
+  const itemContainer = document.createElement('li');
+  const itemForm = document.createElement('form');
+  const todoTitle = document.createElement('input');
+  const checkBox = document.createElement('input');
+  const option = document.createElement('span');
+  const div = document.createElement('div');
+
+  const {
+    id, icon, disabled, completed, description,
+  } = item;
+
+  itemContainer.className = 'todo';
+  itemContainer.draggable = true;
+
+  itemContainer.addEventListener('dragstart', (e) => {
+    itemContainer.classList.add('draggable');
+    itemContainer.style.opacity = 0.4;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.innerHTML);
+  });
+
+  itemContainer.addEventListener('dragend', () => {
+    itemContainer.style.opacity = 1;
+    itemContainer.classList.remove('draggable');
+  });
+
+  todoUl.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const draggable = document.querySelector('.draggable');
+    const afterElement = getDragAfetrElement(todoUl, e.clientY);
+    if (afterElement === null) {
+      todoUl.appendChild(draggable);
+    } else {
+      todoUl.insertBefore(draggable, afterElement);
+    }
+  });
+
+  itemForm.className = 'todo_form';
+
+  todoTitle.className = 'todo_title';
+  todoTitle.value = description;
+  todoTitle.disabled = disabled;
+  checkBox.type = 'checkbox';
+  checkBox.checked = completed;
+  checkBox.className = 'checkbox';
+  checkBox.addEventListener('click', () => {
+    selectTodo(checkBox, todoTitle, item, itemContainer);
+  });
+  option.className = 'material-symbols-outlined';
+  option.innerText = icon;
+  option.style.cursor = option.innerText === 'more_vert' ? 'move' : 'pointer';
+
+  div.appendChild(checkBox);
+  div.appendChild(todoTitle);
+  div.className = 'todo_right';
+  itemForm.appendChild(div);
+  itemContainer.appendChild(itemForm);
+  itemContainer.appendChild(option);
+
+  itemForm.addEventListener('click', (e) => {
+    const el = e.target.type;
+    if (el === 'more_vert' || el === 'checkbox') {
+      return;
+    }
+    updateTodo(todoTitle, id, itemForm, option, itemContainer, todoListss);
+  });
+
+  todoUl.appendChild(itemContainer);
+
+  option.addEventListener('click', (e) => {
+    const el = e.target;
+    if (el.textContent === 'more_vert') {
+      return;
+    }
+    deleteTodo(id, itemContainer, todoListss);
+  });
+};
+export default createTodo;
