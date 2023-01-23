@@ -3,6 +3,16 @@ import { getDragAfetrElement, selectTodo } from './crud2.js';
 
 const createTodo = (item, todoListss, todoUl) => {
   const itemContainer = document.createElement('li');
+  const itemForm = document.createElement('form');
+  const todoTitle = document.createElement('input');
+  const checkBox = document.createElement('input');
+  const option = document.createElement('span');
+  const div = document.createElement('div');
+
+  const {
+    id, icon, disabled, completed, description,
+  } = item;
+
   itemContainer.className = 'todo';
   itemContainer.draggable = true;
 
@@ -29,25 +39,21 @@ const createTodo = (item, todoListss, todoUl) => {
     }
   });
 
-  const itemForm = document.createElement('form');
   itemForm.className = 'todo_form';
-  const todoTitle = document.createElement('input');
+
   todoTitle.className = 'todo_title';
-  todoTitle.value = item.description;
-  todoTitle.disabled = item.disabled;
-  const checkBox = document.createElement('input');
+  todoTitle.value = description;
+  todoTitle.disabled = disabled;
   checkBox.type = 'checkbox';
-  checkBox.checked = item.completed;
+  checkBox.checked = completed;
   checkBox.className = 'checkbox';
   checkBox.addEventListener('click', () => {
     selectTodo(checkBox, todoTitle, item, itemContainer);
   });
-  const option = document.createElement('span');
   option.className = 'material-symbols-outlined';
-  option.innerText = item.icon;
+  option.innerText = icon;
   option.style.cursor = option.innerText === 'more_vert' ? 'move' : 'pointer';
 
-  const div = document.createElement('div');
   div.appendChild(checkBox);
   div.appendChild(todoTitle);
   div.className = 'todo_right';
@@ -60,7 +66,7 @@ const createTodo = (item, todoListss, todoUl) => {
     if (el === 'more_vert' || el === 'checkbox') {
       return;
     }
-    updateTodo(todoTitle, item.id, itemForm, option, itemContainer, todoListss);
+    updateTodo(todoTitle, id, itemForm, option, itemContainer, todoListss);
   });
 
   todoUl.appendChild(itemContainer);
@@ -70,7 +76,7 @@ const createTodo = (item, todoListss, todoUl) => {
     if (el.textContent === 'more_vert') {
       return;
     }
-    deleteTodo(item.id, itemContainer, todoListss);
+    deleteTodo(id, itemContainer, todoListss);
   });
 };
 export default createTodo;

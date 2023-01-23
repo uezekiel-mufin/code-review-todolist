@@ -17,7 +17,7 @@ export const deleteTodo = (id, itemContainer, todoListss) => {
 // logic to update the the description of a todo
 export const updateTodo = (
   input,
-  id,
+  todoId,
   itemForm,
   option,
   itemContainer,
@@ -27,8 +27,9 @@ export const updateTodo = (
   input.focus();
   itemContainer.style.background = 'rgb(224, 224, 149)';
   todoListss.forEach((todo) => {
+    const { id } = todo;
     todo.icon = 'more_vert';
-    if (todo.id === id) {
+    if (id === todoId) {
       todo.disabled = false;
       if (todo.disabled === false) {
         todo.icon = 'delete';
